@@ -234,6 +234,7 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
           <button class="tool" onclick="setCount(0)">全部</button>
           <span class="hint" id="poolInfo"></span>
         </div>
+        <label class="chk"><input type="checkbox" id="freshFirst" checked>優先補這個範圍裡還沒測過的字</label>
         <label class="chk"><input type="checkbox" id="weakOnly">只抽這個模式裡答錯過的字（權重 &gt; 1）</label>
       </div>
     </div>
@@ -440,8 +441,11 @@ function pool(){
   return WORDS.filter(function(x){ return sel.has(x.d) && (!weak || weight(x.w) > 1); });
 }
 function poolInfo(){
-  const n = pool().length;
-  document.getElementById("poolInfo").textContent = "可抽 " + n + " 字（0 = 全部）";
+  const p = pool(), n = p.length;
+  let fresh = 0;
+  for(let i=0;i<n;i++) if(!prog.s[mode][p[i].w]) fresh++;
+  document.getElementById("poolInfo").textContent =
+    "可抽 " + n + " 字｜還沒測過 " + fresh + "（0 = 全部）";
   document.getElementById("start").disabled = n === 0;
 }
 function setCount(n){ document.getElementById("count").value = n; }
@@ -459,6 +463,16 @@ function sample(list, n){
     out.push(p[hit]); p.splice(hit,1);
   }
   return out;
+}
+/* 沒測過的字優先填滿本輪，不足的部分才用權重抽 */
+function sampleRound(p, n){
+  const total = (!n || n > p.length) ? p.length : n;
+  if(!document.getElementById("freshFirst").checked) return sample(p, total);
+  const unseen = [], seen = [];
+  p.forEach(function(x){ (prog.s[mode][x.w] ? seen : unseen).push(x); });
+  const take = shuffle(unseen).slice(0, total);
+  if(take.length >= total) return take;
+  return shuffle(take.concat(sample(seen, total - take.length)));
 }
 function clash(a,b){
   if(a.i === b.i) return true;
@@ -498,7 +512,7 @@ function startRound(list){
   else{
     const p = pool();
     if(!p.length) return;
-    q = sample(p, parseInt(document.getElementById("count").value,10) || 0);
+    q = sampleRound(p, parseInt(document.getElementById("count").value,10) || 0);
   }
   S = {q:q, i:0, delay:delay, mode:mode, ok:0, ng:0, ov:0, rts:[], wrong:[],
        t0:0, shown:false, done:false, raf:0, timer:0, over:false, opts:null};
@@ -778,6 +792,7 @@ document.addEventListener("keydown", function(e){
   d.addEventListener("input", function(){ r.value = d.value; });
   r.addEventListener("input", function(){ d.value = r.value; });
   document.getElementById("weakOnly").addEventListener("change", poolInfo);
+  document.getElementById("freshFirst").addEventListener("change", poolInfo);
   document.getElementById("lib").textContent = WORDS.length + " 字";
   buildDays();
   sel = new Set([1]);
