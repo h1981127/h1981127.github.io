@@ -30,6 +30,47 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--measure);outlin
 .top .sub{font-size:12px;color:var(--faint)}
 .top .right{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--faint)}
 
+/* 分頁列 */
+.tabs{display:flex;gap:6px;margin:0 0 20px}
+.tab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--dim);
+  border:1px solid var(--line);border-radius:2px;padding:8px 16px;background:var(--panel2)}
+.tab:hover{color:var(--ink);border-color:var(--faint)}
+.tab.on{color:var(--measure);border-color:var(--measure);background:#221d13}
+
+/* 複習頁 */
+.rvbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.rvbar select,.rvbar input[type=text]{background:var(--panel2);border:1px solid var(--line);
+  color:var(--ink);font-family:inherit;font-size:13px;padding:8px 10px;border-radius:2px}
+.rvbar select{max-width:100%;flex:1;min-width:200px}
+.rvbar input[type=text]{flex:1;min-width:140px}
+.rvcount{font-family:var(--mono);font-size:11px;color:var(--faint)}
+.rvgrp{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);
+  border-left:3px solid #0f4b3c;background:#132420;padding:6px 10px;margin:16px 0 8px}
+.rw{border-bottom:1px solid var(--line);padding:11px 2px}
+.rw:last-child{border-bottom:none}
+.rwh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.rww{font-family:var(--mono);font-size:17px;font-weight:600}
+.rwph{font-family:var(--mono);font-size:12px;color:var(--ipa)}
+.rwday{font-family:var(--mono);font-size:10px;color:var(--faint);
+  border:1px solid var(--line);border-radius:2px;padding:1px 5px}
+.rwph .reg{font-family:var(--cjk);font-size:10px;color:var(--faint);margin-right:3px}
+@media (max-width:560px){
+  .rww{font-size:16px}
+  .rwph{font-size:11px;order:5}
+  .rwh{row-gap:4px}
+  .rw .spk{padding:3px 7px}
+  .rwtag{order:6}
+}
+.rwtag{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;
+  padding:2px 7px;border-radius:2px;border:1px solid var(--line);color:var(--faint)}
+.rwtag.weak{color:var(--fail);border-color:#7a3230}
+.rwtag.ok{color:var(--pass);border-color:#256b50}
+.rwm{font-size:15px;margin-top:5px}
+.rwm .pos{color:var(--measure);font-weight:700;margin-right:2px}
+.rwex{margin-top:6px;font-size:13px;color:var(--dim);line-height:1.55;
+  border-left:2px solid var(--line);padding-left:10px}
+.rwex .en{color:var(--ink)}
+.rvempty{color:var(--faint);font-size:13px;padding:20px 2px}
 h2{font-size:13px;letter-spacing:.1em;color:var(--dim);margin:0 0 10px;
   font-weight:600;text-transform:uppercase;font-family:var(--mono)}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:3px;
@@ -150,11 +191,14 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
 .act.ok{border-color:#256b50;background:#12241c;color:var(--pass)}
 .act.ng{border-color:#7a3230;background:#251413;color:var(--fail)}
 .act.ok:hover{background:#173124}.act.ng:hover{background:#2f1917}
+.recall .k{font-family:var(--mono);font-size:11px;font-weight:400;opacity:.6;margin-left:8px}
 .recall,.nextq{width:100%;padding:15px;border:1px solid var(--line);border-radius:3px;
   background:var(--panel2);font-size:15px;font-weight:600;margin-top:22px}
 .recall:hover,.nextq:hover{border-color:var(--measure);color:var(--measure)}
 .nextq .k{font-family:var(--mono);font-size:10px;font-weight:400;opacity:.6;margin-left:8px}
-.quit{display:block;margin:20px auto 0;font-size:12px;color:var(--faint)}
+.botbar{display:flex;gap:22px;justify-content:center;margin-top:26px;
+  border-top:1px solid var(--line);padding-top:16px}
+.quit{font-size:12px;color:var(--faint)}
 .quit:hover{color:var(--dim)}
 
 /* ---- 結果 ---- */
@@ -187,6 +231,11 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
     <span class="name">Vocab Check</span>
     <span class="sub">TOEIC 商務單字 30 天</span>
     <span class="right" id="lib"></span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tabQuiz" onclick="goTab('quiz')">測驗</button>
+    <button class="tab" id="tabRv" onclick="goTab('review')">複習</button>
   </div>
 
   <!-- ===== 設定 ===== -->
@@ -250,6 +299,24 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
     </div>
   </section>
 
+  <!-- ===== 複習 ===== -->
+  <section id="review" class="hidden">
+    <div class="card">
+      <div class="rvbar">
+        <select id="rvDay" onchange="renderReview()"></select>
+        <input type="text" id="rvFind" placeholder="搜尋英文或中文" oninput="renderReview()">
+      </div>
+      <div class="rvbar">
+        <label class="chk"><input type="checkbox" id="rvEx" checked onchange="renderReview()">顯示例句</label>
+        <label class="chk"><input type="checkbox" id="rvWeak" onchange="renderReview()">只看答錯過的</label>
+        <label class="chk"><input type="checkbox" id="rvShuf" onchange="reshuffle()">打亂順序</label>
+        <button class="tool hidden" id="rvAgain" onclick="reshuffle()">再打亂一次</button>
+        <span class="rvcount" id="rvCount"></span>
+      </div>
+    </div>
+    <div id="rvList"></div>
+  </section>
+
   <!-- ===== 測驗 ===== -->
   <section id="test" class="hidden">
     <div class="hud">
@@ -275,23 +342,26 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
       <div class="mcgrid hidden" id="mc"></div>
 
       <!-- 自我確認 -->
-      <button class="recall hidden" id="recall" onclick="onRecall()">我想到了</button>
+      <button class="recall hidden" id="recall" onclick="onRecall()">我想到了<span class="k">↓</span></button>
 
       <div class="ans hidden" id="ans">
         <div class="phline">
           <span class="ph" id="ph"></span>
-          <button class="spk" id="spkUS" onclick="say('us')"><span class="lb">美</span> ▶ <span class="k">↑</span></button>
-          <button class="spk" id="spkUK" onclick="say('uk')"><span class="lb">英</span> ▶ <span class="k">↓</span></button>
+          <button class="spk" id="spkUS" onclick="say('us')"><span class="lb">美</span> ▶ <span class="k">↓</span></button>
+          <button class="spk" id="spkUK" onclick="say('uk')"><span class="lb">英</span> ▶ <span class="k">↑</span></button>
         </div>
         <div class="mean" id="mean"></div>
         <div class="ex"><div class="en" id="ex"></div><div class="zh" id="exz"></div></div>
         <div class="acts hidden" id="selfActs">
-          <button class="act ok" onclick="gradeSelf(1)">答對<span class="k">1 / ←</span></button>
-          <button class="act ng" onclick="gradeSelf(0)">答錯<span class="k">2 / →</span></button>
+          <button class="act ok" onclick="gradeSelf(1)">答對<span class="k">←</span></button>
+          <button class="act ng" onclick="gradeSelf(0)">答錯<span class="k">→</span></button>
         </div>
       </div>
     </div>
-    <button class="quit" onclick="quit()">結束本輪</button>
+    <div class="botbar">
+      <button class="quit" onclick="quit()">結束本輪，看成績</button>
+      <button class="quit" onclick="goHome()">回到首頁</button>
+    </div>
   </section>
 
   <!-- ===== 結果 ===== -->
@@ -408,8 +478,8 @@ function setMode(m){
     ? "延遲時間內按「我想到了」才算反應內；逾時仍可自評對錯。"
     : "四個選項同時出現，逾時只標記、仍可作答。干擾項會排除與正解共用義項的字。";
   document.getElementById("keyHint").innerHTML = m === "self"
-    ? "空白鍵＝我想到了　　1／← 答對　　2／→ 答錯　　解答後 ↑ 美式　↓ 英式"
-    : "↑ ← → ↓ ＝選答案　　答完 ↑ 美式　↓ 英式　　空白鍵＝下一題";
+    ? "↓ 我想到了　　解答後：← 答對　→ 答錯　　↓ 美式發音　↑ 英式發音"
+    : "↑ ← → ↓ ＝選答案　　答完：→ 下一題　　↓ 美式發音　↑ 英式發音";
   paintDays();
 }
 
@@ -498,7 +568,29 @@ function options(x){
 }
 
 /* ---------- 一輪 ---------- */
+function goTab(which){
+  const q = which === "quiz";
+  document.getElementById("tabQuiz").classList.toggle("on", q);
+  document.getElementById("tabRv").classList.toggle("on", !q);
+  if(q){
+    document.getElementById("review").classList.add("hidden");
+    show(tabQuizPane);
+    return;
+  }
+  // 切到複習：測驗進行中就先結算本輪（每題成績本來就已即時存檔）
+  if(S && !document.getElementById("test").classList.contains("hidden")) quit();
+  stopAudio();
+  ["setup","test","result"].forEach(function(s){
+    document.getElementById(s).classList.add("hidden");
+  });
+  document.getElementById("review").classList.remove("hidden");
+  renderReview();
+  window.scrollTo(0,0);
+}
+let tabQuizPane = "setup";
 function show(id){
+  tabQuizPane = id;
+  document.querySelector(".tabs").classList.toggle("hidden", id === "test");
   ["setup","test","result"].forEach(function(s){
     document.getElementById(s).classList.toggle("hidden", s !== id);
   });
@@ -515,7 +607,7 @@ function startRound(list){
     q = sampleRound(p, parseInt(document.getElementById("count").value,10) || 0);
   }
   S = {q:q, i:0, delay:delay, mode:mode, ok:0, ng:0, ov:0, rts:[], wrong:[],
-       t0:0, shown:false, done:false, raf:0, timer:0, over:false, opts:null};
+       t0:0, shown:false, done:false, raf:0, timer:0, over:false, opts:null, lockUntil:0};
   buildTicks(delay);
   document.getElementById("spark").innerHTML = "";
   show("test");
@@ -551,7 +643,7 @@ function ask(){
       return '<button class="opt '+cls[k]+'" data-k="'+k+'" title="'+ARROWS[k]+'" '+
              'data-key="'+ARROWS[k]+'" onclick="answerMc('+k+')">'+o.plain+'</button>';
     }).join("") +
-      '<button class="opt onext hidden" id="nextq" title="空白鍵" onclick="nextQ()">下一題</button>';
+      '<button class="opt onext hidden" id="nextq" title="→" onclick="nextQ()">下一題 →</button>';
     mc.classList.remove("hidden"); rc.classList.add("hidden");
   }else{
     mc.classList.add("hidden"); rc.classList.remove("hidden");
@@ -572,10 +664,16 @@ function onTimeout(){
   const el = document.getElementById("rt"); el.textContent = "逾時"; el.className = "val ov";
   if(S.mode === "self" && !S.shown) reveal(null);      // 自我確認：時間到出答案
 }
+const LOCK_MS = 200;
+function locked(){ return !S || performance.now() < S.lockUntil; }
+function lock(){ if(S) S.lockUntil = performance.now() + LOCK_MS; }
 function stopClock(){ clearTimeout(S.timer); cancelAnimationFrame(S.raf); }
 
 /* ---------- 自我確認 ---------- */
-function onRecall(){ if(S.mode === "self" && !S.shown) reveal((performance.now()-S.t0)/1000); }
+function onRecall(){
+  if(locked() || S.mode !== "self" || S.shown) return;
+  reveal((performance.now()-S.t0)/1000);
+}
 function reveal(rt){
   S.shown = true; stopClock(); S.cur_rt = rt;
   const el = document.getElementById("rt"), fill = document.getElementById("fill");
@@ -590,9 +688,10 @@ function reveal(rt){
   document.getElementById("recall").classList.add("hidden");
   document.getElementById("selfActs").classList.remove("hidden");
   document.getElementById("ans").classList.remove("hidden");
+  lock();
 }
 function gradeSelf(good){
-  if(!S.shown || S.done) return;
+  if(locked() || !S.shown || S.done) return;
   S.done = true;
   const x = S.q[S.i];
   bump(x.w, good);
@@ -603,7 +702,7 @@ function gradeSelf(good){
 
 /* ---------- 四選一 ---------- */
 function answerMc(k){
-  if(S.done) return;
+  if(locked() || S.done) return;
   S.done = true; stopClock();
   const rt = (performance.now() - S.t0)/1000;
   const x = S.q[S.i], chosen = S.opts[k], good = chosen.i === x.i;
@@ -624,9 +723,10 @@ function answerMc(k){
   paintAnswer();
   document.getElementById("ans").classList.remove("hidden");
   document.getElementById("nextq").classList.remove("hidden");
+  lock();
 }
 function nextQ(){
-  if(!S.done) return;
+  if(locked() || !S.done) return;
   S.i++;
   if(S.i >= S.q.length) finish(); else ask();
 }
@@ -658,21 +758,30 @@ function paintAnswer(){
   bu.title = x.au ? "" : "劍橋沒有這個字的美式發音";
   bk.title = x.ak ? "" : "劍橋沒有這個字的英式發音";
 }
+function stopAudio(){ if(player){ try{ player.pause(); }catch(e){} player = null; } }
+function playPath(path, btn){
+  if(!path) return;
+  try{
+    stopAudio();
+    if(btn) btn.classList.add("on");
+    player = new Audio(AUDIO_BASE + path);
+    player.addEventListener("ended", function(){ if(btn) btn.classList.remove("on"); });
+    player.addEventListener("error", function(){ if(btn){ btn.classList.remove("on"); btn.disabled = true; } });
+    player.play().catch(function(){ if(btn) btn.classList.remove("on"); });
+  }catch(e){ if(btn) btn.classList.remove("on"); }
+}
 function say(which){
   if(!S) return;
   const answered = S.mode === "mc" ? S.done : S.shown;
   if(!answered) return;
-  const x = S.q[S.i], path = which === "us" ? x.au : x.ak;
-  const btn = document.getElementById(which === "us" ? "spkUS" : "spkUK");
-  if(!path) return;
-  try{
-    if(player){ player.pause(); }
-    player = new Audio(AUDIO_BASE + path);
-    btn.classList.add("on");
-    player.addEventListener("ended", function(){ btn.classList.remove("on"); });
-    player.addEventListener("error", function(){ btn.classList.remove("on"); btn.disabled = true; });
-    player.play().catch(function(){ btn.classList.remove("on"); });
-  }catch(e){ btn.classList.remove("on"); }
+  const x = S.q[S.i];
+  playPath(which === "us" ? x.au : x.ak,
+           document.getElementById(which === "us" ? "spkUS" : "spkUK"));
+}
+/* 複習頁的發音（每個字都有自己的兩顆鍵） */
+function sayWord(i, which, btn){
+  const x = WORDS[i];
+  playPath(which === "us" ? x.au : x.ak, btn);
 }
 function quit(){
   stopClock();
@@ -696,7 +805,7 @@ function finish(){
   let line = (S.mode === "mc" ? "四選一" : "自我確認") + "　" + n + " 題，" +
              (S.mode === "mc" ? "作答時限 " : "延遲設定 ") + S.delay.toFixed(1) + " 秒。";
   if(S.mode === "mc") line += " 四選一有 25% 猜中率，數字會比自我確認漂亮，兩種模式的紀錄是分開存的。";
-  else if(S.ov) line += " 有 " + S.ov + " 題是逾時後才想出來的——那些字在考場上等於不會。";
+  else if(S.ov) line += " 有 " + S.ov + " 題是逾時，再加油！";
   document.getElementById("rLine").textContent = line;
 
   const wc = document.getElementById("wrongCard");
@@ -715,7 +824,92 @@ function finish(){
   }
   show("result");
 }
+function goHome(){
+  stopClock(); stopAudio();
+  S = null;
+  show("setup");
+}
 function retryWrong(){ startRound(S.wrong.map(function(o){return o.x})); }
+
+/* ---------- 複習頁 ---------- */
+function buildRvDays(){
+  document.getElementById("rvDay").innerHTML =
+    '<option value="0">全部 30 天（' + WORDS.length + ' 字）</option>' +
+    DATA.days.map(function(d){
+      return '<option value="'+d.n+'"'+(d.n===1?' selected':'')+'>Day '+d.n+'　'+d.t+'（'+d.c+' 字）</option>';
+    }).join("");
+}
+function esc(s){
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function tagFor(w){
+  const st = prog.s[mode][w];
+  if(!st) return '<span class="rwtag">未測</span>';
+  const wt = weight(w);
+  if(wt > 1) return '<span class="rwtag weak">要加強</span>';
+  if(wt <= 0.25) return '<span class="rwtag ok">熟</span>';
+  return '<span class="rwtag">'+st[0]+'/'+st[1]+'</span>';
+}
+let rvSeed = 1;
+function reshuffle(){
+  rvSeed = (Math.random()*1e9)|0;
+  document.getElementById("rvAgain").classList.toggle("hidden",
+    !document.getElementById("rvShuf").checked);
+  renderReview();
+}
+/* 以字串雜湊排序：同一個 seed 下順序固定，搜尋時不會跳動 */
+function ord(s){
+  let h = rvSeed ^ 0x9e3779b9;
+  for(let i=0;i<s.length;i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  h ^= h >>> 15; h = Math.imul(h, 2246822507);
+  h ^= h >>> 13; h = Math.imul(h, 3266489909);
+  h ^= h >>> 16;
+  return h | 0;
+}
+function renderReview(){
+  const day = parseInt(document.getElementById("rvDay").value,10) || 0;
+  const q = document.getElementById("rvFind").value.trim().toLowerCase();
+  const showEx = document.getElementById("rvEx").checked;
+  const weakOnly = document.getElementById("rvWeak").checked;
+  let list = WORDS.filter(function(x){
+    if(day && x.d !== day) return false;
+    if(weakOnly && !(prog.s[mode][x.w] && weight(x.w) > 1)) return false;
+    if(q && x.w.toLowerCase().indexOf(q) < 0 && x.plain.indexOf(q) < 0) return false;
+    return true;
+  });
+  const shuf = document.getElementById("rvShuf").checked;
+  if(shuf) list = list.slice().sort(function(a,b){ return ord(a.w) - ord(b.w); });
+  document.getElementById("rvCount").textContent =
+    "共 " + list.length + " 字" + (shuf ? "（已打亂）" : "");
+  if(!list.length){
+    document.getElementById("rvList").innerHTML = '<div class="card rvempty">沒有符合的字。</div>';
+    return;
+  }
+  let html = "", curKey = "";
+  let open = false;
+  list.forEach(function(x){
+    const key = shuf ? "shuffled" : (x.d + ":" + x.g);
+    if(key !== curKey){
+      if(open) html += '</div>';
+      html += '<div class="card">' +
+        (shuf ? '' : '<div class="rvgrp">Day ' + x.d + '　字群 ' + x.g + '</div>');
+      curKey = key; open = true;
+    }
+    const ph = x.p.replace(/美/g,'<span class="reg">美</span>').replace(/英/g,'<span class="reg">英</span>');
+    html += '<div class="rw"><div class="rwh">' +
+      '<span class="rww">' + esc(x.w) + '</span>' +
+      (shuf ? '<span class="rwday">D' + x.d + '</span>' : '') +
+      '<span class="rwph">' + ph + '</span>' +
+      (x.au ? '<button class="spk" onclick="sayWord('+x.i+',\'us\',this)"><span class="lb">美</span> ▶</button>' : '') +
+      (x.ak ? '<button class="spk" onclick="sayWord('+x.i+',\'uk\',this)"><span class="lb">英</span> ▶</button>' : '') +
+      tagFor(x.w) + '</div>' +
+      '<div class="rwm">' + x.m.replace(POS, function(c){ return '<span class="pos">'+c+'</span>'; }) + '</div>' +
+      (showEx ? '<div class="rwex"><div class="en">' + esc(x.e) + '</div><div>' + esc(x.z) + '</div></div>' : '') +
+      '</div>';
+  });
+  if(open) html += '</div>';
+  document.getElementById("rvList").innerHTML = html;
+}
 
 /* ---------- 紀錄管理 ---------- */
 function exportData(){
@@ -765,25 +959,27 @@ async function resetData(){
 document.addEventListener("keydown", function(e){
   if(document.getElementById("test").classList.contains("hidden")) return;
   const k = e.key;
-  const answered = S && (S.mode === "mc" ? S.done : S.shown);
+  if(k !== "ArrowUp" && k !== "ArrowDown" && k !== "ArrowLeft" && k !== "ArrowRight") return;
+  e.preventDefault();
+  if(e.repeat) return;          // 忽略長按自動重複，避免連跳
+  if(!S || locked()) return;
 
-  if(S && S.mode === "mc" && !S.done){
-    const idx = {"ArrowUp":0, "ArrowLeft":1, "ArrowRight":2, "ArrowDown":3}[k];
-    if(idx !== undefined){ e.preventDefault(); answerMc(idx); }
-    return;
+  if(S.mode === "mc"){
+    if(!S.done){
+      const idx = {ArrowUp:0, ArrowLeft:1, ArrowRight:2, ArrowDown:3}[k];
+      if(idx !== undefined) answerMc(idx);
+      return;
+    }
+    if(k === "ArrowRight"){ nextQ(); return; }
+  }else{
+    if(!S.shown){ if(k === "ArrowDown") onRecall(); return; }
+    if(!S.done){
+      if(k === "ArrowLeft"){ gradeSelf(1); return; }
+      if(k === "ArrowRight"){ gradeSelf(0); return; }
+    }
   }
-  if(k === "ArrowUp" && answered){ e.preventDefault(); say("us"); return; }
-  if(k === "ArrowDown" && answered){ e.preventDefault(); say("uk"); return; }
-  if(k === " " || k === "Enter"){
-    e.preventDefault();
-    if(S && S.mode === "mc"){ if(S.done) nextQ(); }
-    else if(S && !S.shown) onRecall();
-    return;
-  }
-  if(S && S.mode === "self" && S.shown && !S.done){
-    if(k === "1" || k === "ArrowLeft"){ e.preventDefault(); gradeSelf(1); }
-    if(k === "2" || k === "ArrowRight"){ e.preventDefault(); gradeSelf(0); }
-  }
+  if(k === "ArrowDown") say("us");
+  if(k === "ArrowUp") say("uk");
 });
 
 /* ---------- 啟動 ---------- */
@@ -795,8 +991,9 @@ document.addEventListener("keydown", function(e){
   document.getElementById("freshFirst").addEventListener("change", poolInfo);
   document.getElementById("lib").textContent = WORDS.length + " 字";
   buildDays();
+  buildRvDays();
   sel = new Set([1]);
   setMode("self");
-  load().then(paintDays);
+  load().then(function(){ paintDays(); });
 })();
 </script>
