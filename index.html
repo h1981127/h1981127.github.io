@@ -11,8 +11,21 @@
   --bg:#101317; --panel:#171b21; --panel2:#1d222a; --line:#2a313b;
   --ink:#e9edf2; --dim:#8a94a2; --faint:#5b6572;
   --measure:#f0b429; --pass:#3ddc97; --fail:#ff5f56; --ipa:#c9a37a;
+  --tint:#221d13; --onm:#15181c;
+  --okbg:#12241c; --okbg2:#173124; --okbd:#256b50;
+  --ngbg:#251413; --ngbg2:#2f1917; --ngbd:#7a3230;
+  --grpbg:#132420; --grpbd:#0f4b3c;
   --mono:ui-monospace,"SF Mono","JetBrains Mono","Roboto Mono",Consolas,monospace;
   --cjk:"Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif;
+}
+body.light{
+  --bg:#f7f8fa; --panel:#ffffff; --panel2:#eef1f5; --line:#d7dce3;
+  --ink:#151922; --dim:#5b6674; --faint:#8a94a2;
+  --measure:#9a6400; --pass:#0f7a58; --fail:#c0392b; --ipa:#7a5a33;
+  --tint:#fdf3dc; --onm:#ffffff;
+  --okbg:#e8f6f0; --okbg2:#dcf0e7; --okbd:#0f7a58;
+  --ngbg:#fdecea; --ngbg2:#f8ded9; --ngbd:#c0392b;
+  --grpbg:#e9f4ef; --grpbd:#0f7a58;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);
@@ -35,7 +48,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--measure);outlin
 .tab{font-family:var(--mono);font-size:12px;letter-spacing:.08em;color:var(--dim);
   border:1px solid var(--line);border-radius:2px;padding:8px 16px;background:var(--panel2)}
 .tab:hover{color:var(--ink);border-color:var(--faint)}
-.tab.on{color:var(--measure);border-color:var(--measure);background:#221d13}
+.tab.on{color:var(--measure);border-color:var(--measure);background:var(--tint)}
 
 /* 複習頁 */
 .rvbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
@@ -45,12 +58,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--measure);outlin
 .rvbar input[type=text]{flex:1;min-width:140px}
 .rvcount{font-family:var(--mono);font-size:11px;color:var(--faint)}
 .rvgrp{font-family:var(--mono);font-size:11px;letter-spacing:.08em;color:var(--dim);
-  border-left:3px solid #0f4b3c;background:#132420;padding:6px 10px;margin:16px 0 8px}
+  border-left:3px solid var(--grpbd);background:var(--grpbg);padding:6px 10px;margin:16px 0 8px}
 .rw{border-bottom:1px solid var(--line);padding:11px 2px}
 .rw:last-child{border-bottom:none}
 .rwh{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
 .rww{font-family:var(--mono);font-size:17px;font-weight:600}
 .rwph{font-family:var(--mono);font-size:12px;color:var(--ipa)}
+.phpair{display:inline-flex;align-items:center;gap:6px}
 .rwday{font-family:var(--mono);font-size:10px;color:var(--faint);
   border:1px solid var(--line);border-radius:2px;padding:1px 5px}
 .rwph .reg{font-family:var(--cjk);font-size:10px;color:var(--faint);margin-right:3px}
@@ -63,13 +77,27 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--measure);outlin
 }
 .rwtag{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.06em;
   padding:2px 7px;border-radius:2px;border:1px solid var(--line);color:var(--faint)}
-.rwtag.weak{color:var(--fail);border-color:#7a3230}
-.rwtag.ok{color:var(--pass);border-color:#256b50}
+.rwtag.weak{color:var(--fail);border-color:var(--ngbd)}
+.rwtag.ok{color:var(--pass);border-color:var(--okbd)}
 .rwm{font-size:15px;margin-top:5px}
 .rwm .pos{color:var(--measure);font-weight:700;margin-right:2px}
+.rate{flex:none;display:inline-flex;align-items:center;gap:2px}
+.rate button{font-family:var(--mono);font-size:13px;line-height:1;color:var(--dim);
+  border:1px solid var(--line);border-radius:2px;padding:5px 8px;background:var(--panel2)}
+.rate button:hover:not(:disabled){color:var(--measure);border-color:var(--measure)}
+.rate button:disabled{opacity:.3;cursor:not-allowed}
+#rvRateBox{margin-left:auto}
+.rate .val{font-family:var(--mono);font-size:11px;color:var(--faint);
+  min-width:34px;text-align:center}
+.exspk{flex:none;font-family:var(--mono);font-size:12px;color:var(--dim);
+  border:1px solid var(--line);border-radius:2px;padding:4px 9px;background:var(--panel2)}
+.exspk:hover:not(:disabled){color:var(--measure);border-color:var(--measure)}
+.exspk.on{color:var(--measure);border-color:var(--measure)}
 .rwex{margin-top:6px;font-size:13px;color:var(--dim);line-height:1.55;
   border-left:2px solid var(--line);padding-left:10px}
 .rwex .en{color:var(--ink)}
+.rwex{display:flex;align-items:flex-start;gap:10px}
+.rwex .txt{flex:1;min-width:0}
 .rvempty{color:var(--faint);font-size:13px;padding:20px 2px}
 h2{font-size:13px;letter-spacing:.1em;color:var(--dim);margin:0 0 10px;
   font-weight:600;text-transform:uppercase;font-family:var(--mono)}
@@ -81,7 +109,7 @@ h2{font-size:13px;letter-spacing:.1em;color:var(--dim);margin:0 0 10px;
 .mode{text-align:left;padding:12px 14px;border:1px solid var(--line);border-radius:3px;
   background:var(--panel2);transition:border-color .12s,background .12s}
 .mode:hover{border-color:var(--faint)}
-.mode.on{border-color:var(--measure);background:#221d13}
+.mode.on{border-color:var(--measure);background:var(--tint)}
 .mode .h{font-size:14px;font-weight:700;margin-bottom:3px}
 .mode.on .h{color:var(--measure)}
 .mode .d{font-size:11px;color:var(--faint);line-height:1.5}
@@ -96,7 +124,7 @@ h2{font-size:13px;letter-spacing:.1em;color:var(--dim);margin:0 0 10px;
   border:1px solid var(--line);border-radius:2px;background:var(--panel2);
   transition:border-color .12s,background .12s}
 .day:hover{border-color:var(--faint)}
-.day.on{border-color:var(--measure);background:#221d13}
+.day.on{border-color:var(--measure);background:var(--tint)}
 .day .n{font-family:var(--mono);font-size:11px;color:var(--dim);
   display:flex;justify-content:space-between}
 .day.on .n{color:var(--measure)}
@@ -111,7 +139,7 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
 .hint{font-size:12px;color:var(--faint);line-height:1.5}
 .chk{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim)}
 .chk input{accent-color:var(--measure);width:15px;height:15px}
-.go{width:100%;background:var(--measure);color:#15181c;font-weight:700;font-size:15px;
+.go{width:100%;background:var(--measure);color:var(--onm);font-weight:700;font-size:15px;
   padding:14px;border-radius:3px;letter-spacing:.04em;margin-top:4px}
 .go:disabled{background:var(--panel2);color:var(--faint);cursor:not-allowed}
 
@@ -162,8 +190,8 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
   .opt.onext{min-width:64px;padding:13px 8px;font-size:13px}
   .opt.o-top,.opt.o-bot{width:calc(50% - 4px)}
 }
-.opt.right{border-color:var(--pass);background:#12241c;color:var(--pass)}
-.opt.wrong{border-color:var(--fail);background:#251413;color:var(--fail)}
+.opt.right{border-color:var(--okbd);background:var(--okbg);color:var(--pass)}
+.opt.wrong{border-color:var(--ngbd);background:var(--ngbg);color:var(--fail)}
 .opt.done{cursor:default}
 .opt.dim{opacity:.42}
 
@@ -181,6 +209,8 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
 .ans .mean{font-size:21px;line-height:1.5;margin-bottom:16px}
 .ans .mean .pos{color:var(--measure);font-weight:700;margin-right:2px}
 .ans .ex{background:var(--panel);border-left:2px solid var(--line);padding:11px 14px;border-radius:2px}
+.ans .ex{display:flex;align-items:flex-start;gap:10px}
+.ans .ex .txt{flex:1;min-width:0}
 .ans .ex .en{font-size:14px;line-height:1.55}
 .ans .ex .zh{font-size:13px;color:var(--dim);margin-top:4px;line-height:1.5}
 
@@ -188,9 +218,9 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
 .act{padding:15px;border-radius:3px;font-size:15px;font-weight:700;border:1px solid}
 .act .k{display:block;font-family:var(--mono);font-size:10px;font-weight:400;
   opacity:.7;margin-top:3px;letter-spacing:.08em}
-.act.ok{border-color:#256b50;background:#12241c;color:var(--pass)}
-.act.ng{border-color:#7a3230;background:#251413;color:var(--fail)}
-.act.ok:hover{background:#173124}.act.ng:hover{background:#2f1917}
+.act.ok{border-color:var(--okbd);background:var(--okbg);color:var(--pass)}
+.act.ng{border-color:var(--ngbd);background:var(--ngbg);color:var(--fail)}
+.act.ok:hover{background:var(--okbg2)}.act.ng:hover{background:var(--ngbg2)}
 .recall .k{font-family:var(--mono);font-size:11px;font-weight:400;opacity:.6;margin-left:8px}
 .recall,.nextq{width:100%;padding:15px;border:1px solid var(--line);border-radius:3px;
   background:var(--panel2);font-size:15px;font-weight:600;margin-top:22px}
@@ -218,8 +248,8 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
 .next button{padding:13px;border:1px solid var(--line);border-radius:3px;
   background:var(--panel2);font-size:14px;font-weight:600}
 .next button:hover{border-color:var(--measure);color:var(--measure)}
-.next .prim{background:var(--measure);color:#15181c;border-color:var(--measure)}
-.next .prim:hover{color:#15181c;opacity:.9}
+.next .prim{background:var(--measure);color:var(--onm);border-color:var(--measure)}
+.next .prim:hover{color:var(--onm);opacity:.9}
 .foot{display:flex;gap:14px;justify-content:center;margin-top:26px;
   font-family:var(--mono);font-size:11px;color:var(--faint)}
 .foot button:hover{color:var(--dim)}
@@ -231,6 +261,7 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
     <span class="name">Vocab Check</span>
     <span class="sub">TOEIC 商務單字 30 天</span>
     <span class="right" id="lib"></span>
+    <button class="tool" id="themeBtn" onclick="toggleTheme()" style="margin-left:10px">☾ 深色</button>
   </div>
 
   <div class="tabs">
@@ -312,6 +343,12 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
         <label class="chk"><input type="checkbox" id="rvShuf" onchange="reshuffle()">打亂順序</label>
         <button class="tool hidden" id="rvAgain" onclick="reshuffle()">再打亂一次</button>
         <span class="rvcount" id="rvCount"></span>
+        <span class="rate" id="rvRateBox">
+          <span class="hint" style="margin-right:2px">例句語速</span>
+          <button onclick="bumpRate(-0.1)" title="放慢 0.1">−</button>
+          <span class="val" id="rvRateVal">1.0×</span>
+          <button onclick="bumpRate(0.1)" title="加快 0.1">＋</button>
+        </span>
       </div>
     </div>
     <div id="rvList"></div>
@@ -351,7 +388,15 @@ input[type=range]{flex:1;min-width:140px;accent-color:var(--measure)}
           <button class="spk" id="spkUK" onclick="say('uk')"><span class="lb">英</span> ▶ <span class="k">↑</span></button>
         </div>
         <div class="mean" id="mean"></div>
-        <div class="ex"><div class="en" id="ex"></div><div class="zh" id="exz"></div></div>
+        <div class="ex">
+          <div class="txt"><div class="en" id="ex"></div><div class="zh" id="exz"></div></div>
+          <button class="exspk" id="spkEx" onclick="sayEx(this)" title="唸出例句">▶</button>
+          <span class="rate" id="rateBox">
+            <button onclick="bumpRate(-0.1)" title="放慢 0.1">−</button>
+            <span class="val" id="rateVal">1.0×</span>
+            <button onclick="bumpRate(0.1)" title="加快 0.1">＋</button>
+          </span>
+        </div>
         <div class="acts hidden" id="selfActs">
           <button class="act ok" onclick="gradeSelf(1)">答對<span class="k">←</span></button>
           <button class="act ng" onclick="gradeSelf(0)">答錯<span class="k">→</span></button>
@@ -579,7 +624,7 @@ function goTab(which){
   }
   // 切到複習：測驗進行中就先結算本輪（每題成績本來就已即時存檔）
   if(S && !document.getElementById("test").classList.contains("hidden")) quit();
-  stopAudio();
+  stopAudio(); stopTTS();
   ["setup","test","result"].forEach(function(s){
     document.getElementById(s).classList.add("hidden");
   });
@@ -623,7 +668,7 @@ function buildTicks(delay){
 
 function ask(){
   const x = S.q[S.i];
-  if(player){ try{ player.pause(); }catch(e){} player = null; }
+  stopAudio(); stopTTS();
   document.getElementById("prog").textContent = (S.i+1) + " / " + S.q.length;
   document.getElementById("tally").textContent = "✓ " + S.ok + "　✕ " + S.ng;
   document.getElementById("word").textContent = x.w;
@@ -757,12 +802,85 @@ function paintAnswer(){
   bu.classList.remove("on"); bk.classList.remove("on");
   bu.title = x.au ? "" : "劍橋沒有這個字的美式發音";
   bk.title = x.ak ? "" : "劍橋沒有這個字的英式發音";
+  const be = document.getElementById("spkEx");
+  be.classList.toggle("hidden", !TTS_OK);
+  be.classList.remove("on");
+  paintRate();
 }
+/* 例句朗讀：瀏覽器內建語音合成（美式、正常語速，單一顆播放鍵） */
+const TTS_OK = (typeof window !== "undefined") && ("speechSynthesis" in window)
+             && (typeof SpeechSynthesisUtterance !== "undefined");
+let enVoice = null, ttsBtn = null;
+const RKEY = "toeic:vocabcheck:rate";
+const RATE_MIN = 0.5, RATE_MAX = 2.0;
+let ttsRate = 1;
+function paintRate(){
+  const s = ttsRate.toFixed(1) + "×";
+  ["rateVal","rvRateVal"].forEach(function(id){
+    const el = document.getElementById(id); if(el) el.textContent = s;
+  });
+  ["rateBox","rvRateBox"].forEach(function(id){
+    const box = document.getElementById(id);
+    if(!box) return;
+    box.classList.toggle("hidden", !TTS_OK);
+    const bs = box.querySelectorAll("button");
+    if(bs[0]) bs[0].disabled = ttsRate <= RATE_MIN + 1e-9;
+    if(bs[1]) bs[1].disabled = ttsRate >= RATE_MAX - 1e-9;
+  });
+}
+function bumpRate(d){
+  ttsRate = Math.round(Math.min(RATE_MAX, Math.max(RATE_MIN, ttsRate + d)) * 10) / 10;
+  paintRate();
+  try{ DB.set(RKEY, String(ttsRate)); }catch(e){}
+}
+async function loadRate(){
+  try{
+    const v = await DB.get(RKEY);
+    const n = parseFloat(v);
+    if(!isNaN(n)) ttsRate = Math.min(RATE_MAX, Math.max(RATE_MIN, n));
+  }catch(e){}
+  paintRate();
+}
+function pickVoice(){
+  if(!TTS_OK) return;
+  let vs = [];
+  try{ vs = speechSynthesis.getVoices() || []; }catch(e){ return; }
+  if(!vs.length) return;
+  const us = vs.filter(function(v){ return (v.lang||"").replace("_","-") === "en-US"; });
+  enVoice = us.find(function(v){ return /google|natural|neural|samantha|siri|ava|zira/i.test(v.name); })
+         || us[0]
+         || vs.find(function(v){ return (v.lang||"").toLowerCase().indexOf("en") === 0; })
+         || null;
+}
+if(TTS_OK){
+  pickVoice();
+  try{ speechSynthesis.addEventListener("voiceschanged", pickVoice); }catch(e){}
+}
+function stopTTS(){
+  if(TTS_OK){ try{ speechSynthesis.cancel(); }catch(e){} }
+  if(ttsBtn){ ttsBtn.classList.remove("on"); ttsBtn = null; }
+}
+function speakText(text, btn){
+  if(!TTS_OK || !text) return;
+  stopAudio(); stopTTS();
+  if(!enVoice) pickVoice();                 // iOS 語音清單是延遲載入的
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  if(enVoice) u.voice = enVoice;
+  u.rate = ttsRate; u.pitch = 1;
+  const done = function(){ if(btn) btn.classList.remove("on"); ttsBtn = null; };
+  u.onend = done; u.onerror = done;
+  if(btn){ btn.classList.add("on"); ttsBtn = btn; }
+  try{ speechSynthesis.speak(u); }catch(e){ done(); }
+}
+function sayEx(btn){ if(S) speakText(S.q[S.i].e, btn); }
+function sayExText(i, btn){ speakText(WORDS[i].e, btn); }
+
 function stopAudio(){ if(player){ try{ player.pause(); }catch(e){} player = null; } }
 function playPath(path, btn){
   if(!path) return;
   try{
-    stopAudio();
+    stopAudio(); stopTTS();
     if(btn) btn.classList.add("on");
     player = new Audio(AUDIO_BASE + path);
     player.addEventListener("ended", function(){ if(btn) btn.classList.remove("on"); });
@@ -790,8 +908,7 @@ function quit(){
   finish();
 }
 function finish(){
-  stopClock();
-  if(player){ try{ player.pause(); }catch(e){} player = null; }
+  stopClock(); stopAudio(); stopTTS();
   document.getElementById("spark").innerHTML = "";
   const n = S.ok + S.ng;
   const pct = n ? Math.round(S.ok/n*100) : 0;
@@ -825,11 +942,33 @@ function finish(){
   show("result");
 }
 function goHome(){
-  stopClock(); stopAudio();
+  stopClock(); stopAudio(); stopTTS();
   S = null;
   show("setup");
 }
 function retryWrong(){ startRound(S.wrong.map(function(o){return o.x})); }
+
+/* ---------- 日夜主題 ---------- */
+const TKEY = "toeic:vocabcheck:theme";
+function applyTheme(light){
+  document.body.classList.toggle("light", !!light);
+  document.getElementById("themeBtn").textContent = light ? "☀ 淺色" : "☾ 深色";
+  const m = document.querySelector('meta[name="theme-color"]');
+  if(m) m.setAttribute("content", light ? "#f7f8fa" : "#101317");
+}
+function toggleTheme(){
+  const light = !document.body.classList.contains("light");
+  applyTheme(light);
+  try{ DB.set(TKEY, light ? "light" : "dark"); }catch(e){}
+}
+async function loadTheme(){
+  let v = null;
+  try{ v = await DB.get(TKEY); }catch(e){}
+  if(v === null || v === undefined){
+    v = (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) ? "light" : "dark";
+  }
+  applyTheme(v === "light");
+}
 
 /* ---------- 複習頁 ---------- */
 function buildRvDays(){
@@ -841,6 +980,34 @@ function buildRvDays(){
 }
 function esc(s){
   return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+/* 把「美 /…/　英 /…/」拆開，每個音標後面直接跟它自己的播放鍵 */
+function spkBtn(i, which){
+  const lb = which === "us" ? "美" : "英";
+  return '<button class="spk" onclick="sayWord('+i+',\''+which+'\',this)">'+
+         '<span class="lb">'+lb+'</span> ▶</button>';
+}
+function phBlocks(x){
+  const segs = x.p.split("\u3000").map(function(s){ return s.trim(); }).filter(Boolean);
+  let out = "";
+  let labelled = false;
+  segs.forEach(function(s){
+    const m = s.match(/^(美|英)\s*(.*)$/);
+    if(m){
+      labelled = true;
+      const which = m[1] === "美" ? "us" : "uk";
+      const has = which === "us" ? x.au : x.ak;
+      out += '<span class="phpair"><span class="rwph"><span class="reg">' + m[1] + '</span>' +
+             m[2] + '</span>' + (has ? spkBtn(x.i, which) : '') + '</span>';
+    }else{
+      out += '<span class="phpair"><span class="rwph">' + s + '</span>' +
+             (x.au ? spkBtn(x.i, "us") : '') + (x.ak ? spkBtn(x.i, "uk") : '') + '</span>';
+    }
+  });
+  if(!segs.length){
+    out = (x.au ? spkBtn(x.i, "us") : '') + (x.ak ? spkBtn(x.i, "uk") : '');
+  }
+  return out;
 }
 function tagFor(w){
   const st = prog.s[mode][w];
@@ -895,16 +1062,16 @@ function renderReview(){
         (shuf ? '' : '<div class="rvgrp">Day ' + x.d + '　字群 ' + x.g + '</div>');
       curKey = key; open = true;
     }
-    const ph = x.p.replace(/美/g,'<span class="reg">美</span>').replace(/英/g,'<span class="reg">英</span>');
     html += '<div class="rw"><div class="rwh">' +
       '<span class="rww">' + esc(x.w) + '</span>' +
       (shuf ? '<span class="rwday">D' + x.d + '</span>' : '') +
-      '<span class="rwph">' + ph + '</span>' +
-      (x.au ? '<button class="spk" onclick="sayWord('+x.i+',\'us\',this)"><span class="lb">美</span> ▶</button>' : '') +
-      (x.ak ? '<button class="spk" onclick="sayWord('+x.i+',\'uk\',this)"><span class="lb">英</span> ▶</button>' : '') +
+      phBlocks(x) +
       tagFor(x.w) + '</div>' +
       '<div class="rwm">' + x.m.replace(POS, function(c){ return '<span class="pos">'+c+'</span>'; }) + '</div>' +
-      (showEx ? '<div class="rwex"><div class="en">' + esc(x.e) + '</div><div>' + esc(x.z) + '</div></div>' : '') +
+      (showEx ? '<div class="rwex"><div class="txt"><div class="en">' + esc(x.e) + '</div><div>' +
+        esc(x.z) + '</div></div>' +
+        (TTS_OK ? '<button class="exspk" onclick="sayExText('+x.i+',this)" title="唸出例句">▶</button>' : '') +
+        '</div>' : '') +
       '</div>';
   });
   if(open) html += '</div>';
@@ -994,6 +1161,8 @@ document.addEventListener("keydown", function(e){
   buildRvDays();
   sel = new Set([1]);
   setMode("self");
+  loadTheme();
+  loadRate();
   load().then(function(){ paintDays(); });
 })();
 </script>
